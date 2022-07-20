@@ -1,0 +1,269 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <conio.h>
+#include <ctype.h>
+
+//DADOS DO JOGADOR
+struct almirante
+{
+    char nome[100];
+    int vida;
+    int tentativas;
+    int placar;
+};
+struct almirante jogador;
+
+//MENU BASICO
+void menuPrincipal ()
+{
+    printf("\t| Bem-vindo ao Batalha Naval Single Player |");
+    printf("\n");
+    printf("\t Escolha abaixo uma das opcoes no menu:\n");
+    printf("\t 1 : Jogar \n");
+    printf("\t 2 : Sobre \n");
+    printf("\t 3 : Sair\n");
+}
+
+//LOGICA DO JOGO
+void batalha_naval ()
+    char campo[15][15]; //Campo
+    int l, c;
+    int c1 = 0, l1 = 0;
+    int vida = 20, tentativas;
+
+    jogador.placar = 0;
+
+    //INICIANDO A MATRIZ INIMIGA
+    srand(time(NULL));
+    int inimigo[15][15] = {0};
+    int i=0, j=0;
+    int conta_um = 0, conta_dois = 0;
+
+    //FOR PARA INICIAR A TABELA COM 0 (ZEROS);
+    for(i = 0; i < 15; i++){
+        for(j = 0; j < 15; j++){
+            inimigo[i][j] = 0;
+        }
+    }
+    while(conta_dois < 20){
+        i = rand()%15;
+        j = rand()%15;
+        if ( inimigo[i][j] == 0 ){
+            inimigo[i][j] = 2;
+        }
+        conta_dois++;
+    }
+    while(conta_um < 50){
+        i = rand()%15;
+        j = rand()%15;
+        if ( inimigo[i][j] == 0 ){
+            inimigo[i][j] = 1;
+        }
+        conta_um++;
+    }
+
+            //HABILITE PARA MOSTRAR A TABELA RESPOSTA:
+            /*
+            printf("\n\n\t  --------------------------------------------------\n");
+            printf("\t |                 _ Tabela Resposta _              |\n");
+            printf("\t  --------------------------------------------------\n");
+            printf("\t |  |  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15  |\n");
+            printf("\t  --------------------------------------------------\n");
+            for(i = 0; i < 15; i++)
+            {
+                printf("\t |%i", i);
+                if(i<10){
+                    printf(" ");
+                }
+                printf("|");
+                for(j = 0; j < 15; j++)
+                {
+                    printf("  %i", inimigo[i][j]);
+                }
+                printf("  |");
+                printf("\n");
+            }
+            printf("\t  --------------------------------------------------\n");
+            */
+
+    //DESENHA O JOGO
+    printf("\n\n\t  --------------------------------------------------\n");
+    printf("\t |                 _ Batalha Naval _                |\n");
+    printf("\t  --------------------------------------------------\n");
+    printf("\t |  |  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15  |\n");
+    printf("\t  --------------------------------------------------\n");
+    for(l = 0; l < 15; l = l + 1)
+    {
+        printf("\t |%i", l);
+        if(l<10){
+            printf(" ");
+        }
+        printf("|");
+        for(c = 0; c < 15; c = c + 1)
+        {
+            campo[l][c] = '~';
+            printf("  %c" , campo[l][c]);
+        }
+        printf("  |");
+        printf("\n");
+    }
+    printf("\t  --------------------------------------------------\n");
+
+
+    //Condição para continuar jogando
+    while (vida != 0)
+    {
+
+	//Tentativa
+    printf("\tAlmirante %s\n", jogador.nome);
+    printf("\tVida: %i\n\n", vida);
+    printf("\tInforme a linha: ");
+    scanf("%i", &l);
+    if(l == -1){
+        vida = 0;
+    }
+    printf("\tInforme a coluna: ");
+    scanf("%i", &c);
+    printf("\n");
+
+ 	if(l < 15 && l >=0 &&
+	   c < 15 && c >=0 && campo[l][c] == '~'){
+		switch(inimigo[l][c]){
+			case 0: campo[l][c] = '*';
+				  printf("\tAtingiu AGUA\n\n");
+				  break;
+
+			case 1: campo[l][c] = 'a';
+				  vida = vida-2;
+			  	  printf("\tAcertou um aliado!\n\n");
+				  break;
+
+			case 2: campo[l][c] = 'b';
+				  jogador.placar = jogador.placar+1;
+				  printf("\tAcertou!\n");
+				  break;
+
+			case 3: campo[l][c] = 'c';
+                    jogador.placar = jogador.placar+2;
+				    printf("\tAcertou\n\n");
+				    break;
+
+			case 4: campo[l][c] = 'd';
+                    jogador.placar = jogador.placar+3;
+                    printf("\tAcertou!\n\n");
+                    break;
+
+			default:
+			printf("ErrROU!\n");
+		}
+	}
+    //desenha
+    printf("\n\n\t  --------------------------------------------------\n");
+    printf("\t |                 _ Batalha Naval _                |\n");
+    printf("\t  --------------------------------------------------\n");
+    printf("\t |  |  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15  |\n");
+    printf("\t  --------------------------------------------------\n");
+    for(l = 0; l < 15; l = l + 1) {
+         printf("\t |%i", l+1);
+        if(l<9){
+            printf(" ");
+        }
+        printf("|");
+       	for (c = 0; c <15; c = c + 1){
+        	printf("  %c", campo[l][c]);
+        }
+        printf("  |");
+        printf("\n");
+    }
+    printf("\t  --------------------------------------------------\n");
+
+   	if(vida == 0){
+    	system("cls");
+        printf("\n\n\t ----------------------------------------------\n");
+        puts("\t| FIM DO JOGO - VOCÊ PERDEU                    |");
+        printf("\t ----------------------------------------------");
+        printf("\n\t| Jogador: %s                                   |", jogador.nome);
+        printf("\n\t| Placar:  %i                                   |",jogador.placar);
+        printf("\n\t| Aliados Atingidos: %i                         |\n", 0);
+        printf("\t ----------------------------------------------\n");
+    }
+	}
+}
+
+int apenasNumeros(){
+
+
+    char digitado[50];//armazena o que foi digitado pelo usuário
+    char c;//armazena cada caractere digitado pelo usuário
+    int i=0;//variável para controlar o índice do vetor de caracteres
+    int numero=0;//variável para armazenar a conversão do que foi digitado pelo usuário
+
+    //Filtro de caracteres para o programa aceitar apenas numeros no MENU
+    do
+    {
+       c=getch();//captura o caractere digitado pelo usuário
+       if (isdigit(c)!=0)//se for um número
+       {
+          digitado[i] = c;//armazena no vetor de caracteres
+          i++;//incrementa o índice do vetor de caracteres
+          printf ("%c", c);//exibe o caractere digitado
+       }
+       else if(c==8&&i)//se for pressionada a tecla BACKSPACE e houver caracteres já digitados
+       {
+          digitado[i]='\0';//o índice atual do vetor de caracteres recebe a terminação da string
+          i--;//o índice do vetor de caracteres é decrementado
+          printf("\b \b");//o caractere digitado é apagado da tela
+       }
+    }while(c!=13);//o loop vai ser executado até que a tecla pressionada seja o ENTER (código 13 na tabela ASCII)
+
+    digitado[i]='\0';//o índice atual do vetor de caracteres recebe a terminação da string
+    return numero = atoi(digitado);//a variável numero recebe o valor do vetor de caracteres convertido para inteiro
+
+}
+
+int main ()
+{
+    setlocale(LC_ALL,"portuguese");
+
+    int voltar = 0; // usando no if 2 que retorna ao menu principal depois de ler o Sobre
+    char digitado;
+
+    menuPrincipal();
+
+    printf("\n\t -Informe um numero %i : ", voltar);
+
+    int numero = apenasNumeros();
+
+
+    if(numero == 1){
+            fflush(stdin);
+            printf("\n\n\t -Ola jogador! Digite seu nome para iniciar >> ");
+            gets(jogador.nome);
+        }
+
+     if(numero == 3){
+          system("pause");
+        }
+
+    if(numero == 2){
+        printf("\n\n\tSobre o jogo: ");
+        printf("\n\t-Você é o Almirante que tem a missão de derrubar todas as embarcações inimigas para ganhar o jogo.");
+        printf("\n\t-As embarcacoes inimigas sao: b(2 celula), c(3 celulas) e d(4 celula) ");
+        printf("\n\t-Evite afundar as embarcações aliadas Almirante!, se acertou a(aliado) Perde 1 vida");
+        printf("\n\t-Para VOLTAR ao menu principal, informe qualquer valor: ");
+        printf("\n\t-Digite: ");
+        scanf(" %i", &voltar);
+        if(voltar){
+            system("cls");
+            main();
+        }
+    }
+
+    system("cls");
+    batalha_naval ();
+
+    system("pause");
+    return 0;
+}
